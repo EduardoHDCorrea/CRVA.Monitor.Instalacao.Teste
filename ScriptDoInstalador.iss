@@ -272,17 +272,18 @@ begin
   end;
 end;
 
-procedure CriarServicoDoWindows(NomeUsuario, SenhaUsuario, DominioUsuario: String; out ResultCode: Integer);
+procedure CriarServicoDoWindows(NomeUsuario, SenhaUsuario, DominioUsuario: string);
+var
+  ResultCode: Integer;
 begin
-  if NomeUsuario = '' or SenhaUsuario = '' or DominioUsuario = ''
+  if NomeUsuario = '' then
   begin
-    Result += Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
-      '" start= auto', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') + '" start= auto "', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   end
   else
   begin
-    Result += Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
-      '" start= auto obj= "' + Dominio + '\' + NomeUsuarioWindows + '" password= "' + SenhaWindows + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
+      '" start= auto obj= "' + DominioUsuario + '\' + NomeUsuario + '" password= "' + SenhaUsuario + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   end;
 end;
 
@@ -311,7 +312,7 @@ begin
     SenhaWindows := PaginaDeCredenciaisDoWindows.Values[1];
     ObterDominioDoUsuario(Dominio);
     
-    CriarServicoDoWindows(NomeUsuarioWindows, SenhaWindows, Dominio, ResultCode);
+    CriarServicoDoWindows(NomeUsuarioWindows, SenhaWindows, Dominio);
     ExibirMensagemComResultCode('Serviço criado', ResultCode);
     Sleep(1500);
     if Exec('sc', 'start {#NomeDaAplicacao}', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
