@@ -272,7 +272,7 @@ begin
   end;
 end;
 
-procedure CriarServicoDoWindows(NomeUsuario, SenhaUsuario, DominioUsuario: String; out ResultCode: Integer)
+procedure CriarServicoDoWindows(NomeUsuario, SenhaUsuario, DominioUsuario: String; out ResultCode: Integer);
 begin
   if NomeUsuario = '' or SenhaUsuario = '' or DominioUsuario = ''
   begin
