@@ -22,7 +22,7 @@ ArchitecturesInstallIn64BitMode=win64
 DefaultGroupName={#NomeDaAplicacao}
 DisableProgramGroupPage=yes
 ; PrivilegesRequired=admin ; --> Para publicar uma versão final, deixa os privilégios como admin. Para testes, deixar como lowest.
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 OutputBaseFilename={#NomeDaAplicacao}.Instalador
 Compression=lzma
 SolidCompression=yes
@@ -272,6 +272,20 @@ begin
   end;
 end;
 
+procedure CriarServicoDoWindows(NomeUsuario, SenhaUsuario, DominioUsuario: String; out ResultCode: Integer)
+begin
+  if NomeUsuario = '' or SenhaUsuario = '' or DominioUsuario = ''
+  begin
+    Result += Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
+      '" start= auto', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end
+  else
+  begin
+    Result += Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
+      '" start= auto obj= "' + Dominio + '\' + NomeUsuarioWindows + '" password= "' + SenhaWindows + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   ResultCode: Integer;
@@ -296,29 +310,20 @@ begin
     NomeUsuarioWindows := PaginaDeCredenciaisDoWindows.Values[0];
     SenhaWindows := PaginaDeCredenciaisDoWindows.Values[1];
     ObterDominioDoUsuario(Dominio);
-
-    if Exec('sc', 'create {#NomeDaAplicacao} binPath= "' + ExpandConstant('{app}\{#NomeDoExecutavelDaAplicacao}') +
-      '" start= auto obj= "' + Dominio + '\' + NomeUsuarioWindows + '" password= "' + SenhaWindows + '"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    
+    CriarServicoDoWindows(NomeUsuarioWindows, SenhaWindows, Dominio, ResultCode);
+    ExibirMensagemComResultCode('Serviço criado', ResultCode);
+    Sleep(1500);
+    if Exec('sc', 'start {#NomeDaAplicacao}', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
     begin
-      ExibirMensagemComResultCode('Serviço criado', ResultCode);
-      Sleep(1500);
-      if Exec('sc', 'start {#NomeDaAplicacao}', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
-      begin
-        ExibirMensagemComResultCode('Serviço iniciado', ResultCode);
-      end
-      else
-      begin
-        ExibirMensagemComResultCode('Erro ao tentar iniciar o serviço no Windows', ResultCode);
-      end;
+      ExibirMensagemComResultCode('Serviço iniciado', ResultCode);
     end
     else
     begin
-      ExibirMensagemComResultCode('Erro ao tentar criar o serviço no Windows', ResultCode);
-      Abort;
+      ExibirMensagemComResultCode('Erro ao tentar iniciar o serviço no Windows', ResultCode);
     end;
   end;
 end;
-
 
 procedure CurUninstallStepChanged(CurStep: TUninstallStep);
 var
