@@ -17,6 +17,7 @@
           "Avalonia.Themes.Fluent": "11.3.11",
           "AvaloniaPdfViewer": "0.0.2-pre",
           "SkyInfo.Crva.Digitalliza.Desktop.Aplicação.Genérica": "1.0.0",
+          "SkyInfo.Crva.Digitalliza.Desktop.Domínio.ConfiguraçãoLocal": "1.0.0",
           "SkyInfo.Crva.Digitalliza.Desktop.Domínio.Documento": "1.0.0",
           "SkyInfo.Crva.Digitalliza.Desktop.Infraestrutura": "1.0.0",
           "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "8.0.18",
@@ -2784,6 +2785,17 @@
           }
         }
       },
+      "SkyInfo.Crva.Digitalliza.Desktop.Domínio.ConfiguraçãoLocal/1.0.0": {
+        "dependencies": {
+          "SkyInfo.Crva.Digitalliza.Desktop.Infraestrutura": "1.0.0"
+        },
+        "runtime": {
+          "SkyInfo.Crva.Digitalliza.Desktop.Domínio.ConfiguraçãoLocal.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "SkyInfo.Crva.Digitalliza.Desktop.Domínio.ControleDeVersionamento/1.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "9.0.4",
@@ -4244,6 +4256,11 @@
       "sha512": ""
     },
     "SkyInfo.Crva.Digitalliza.Desktop.Domínio.Autenticação/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SkyInfo.Crva.Digitalliza.Desktop.Domínio.ConfiguraçãoLocal/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
